@@ -62,9 +62,9 @@ double GGMT::update_thermostat(double momentum, double mass, double t_step)
             double g_2 = (std::pow(momentum, 4) / (3 * std::pow(mass, 2))) - std::pow(kT, 2);
             p_2 += (dt / 2) * g_2;
             double lambda = (p_1 / q_1) + (kT * p_2 / q_2);
-            momentum *= std::exp(- (dt / 4) * lambda);
+            momentum *= std::exp(-(dt / 4) * lambda);
             momentum *= std::pow((1 / (1 + (2 * std::pow(momentum, 2) * (p_2 / (q_2 * 3 * mass)) * (dt / 2)))), 1/2);
-            momentum *= std::exp(- (dt / 4) * lambda);
+            momentum *= std::exp(-(dt / 4) * lambda);
             eta1 += (dt * (p_1 / q_1));
 
             // Reset constant g
@@ -73,6 +73,8 @@ double GGMT::update_thermostat(double momentum, double mass, double t_step)
             // Finish thermostat variable update
             eta2 += ((dt * g * p_2) / q_2);
             momentum *= std::exp(-(dt / 4) * lambda);
+	        momentum *= std::pow((1 / (1 + (2 * std::pow(momentum, 2) * (p_2 / (q_2 * 3 * mass)) * (dt / 2)))), 1/2);
+	        momentum *= std::exp(-(dt / 4) * lambda);
             g_2 = (std::pow(momentum, 4) / (3 * std::pow(mass, 2))) - std::pow(kT, 2); 
             p_2 += (dt / 2) * g_2; 
             g_1 = (std::pow(momentum, 2) / mass) - kT;

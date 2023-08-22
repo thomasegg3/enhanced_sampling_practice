@@ -34,10 +34,10 @@ class Particle
         double m_x, m_y;     // x and y masses
 
         // Constants governing potential
-        double d;
-        double a;
-        double omega;
-        double lambda;
+        double d = 4;
+        double a = 1;
+        double omega = 1;
+        double lambda = 2.878;
 
         // Set force as gradient of potential
         double force_x, force_y;

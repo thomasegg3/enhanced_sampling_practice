@@ -11,15 +11,7 @@
 #include <string>
 #include "Particle.h"
 
-// Struct for results
-struct Result
-{
-    std::vector<int> steps;
-    std::vector<double> x_coord;
-    std::vector<double> x_momenta;
-};
-
-void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_steps, double t_step, Result& r)
+void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_steps, double t_step, std::string& filename)
 /*
     Function to run dynamics simulation
     Particle p : particle to propagate
@@ -27,43 +19,18 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
     GGMT thermostat_2 : thermostat 2
     int n_steps : number of steps
     double t_step : timestep
-    Result r : result struct
+    string filename : name of file to save to
 */
 {
-    // For loop to run simulation
-    for (int i = 0; i < n_steps; i++)
-    {
-        // Append trajectories
-        r.steps.push_back(i);
-        r.x_coord.push_back(p.get_x());
-        r.x_momenta.push_back(p.get_xmomentum());
+    // Variable to print completion bar
+    int j = 0;
+    double progress;
 
-        // Propagate particle
-        p.propagate_momentum(t_step);
-        p.propagate_position(t_step);
-        p.propagate_momentum(t_step, thermostat_1, 'x');
-        p.propagate_momentum(t_step, thermostat_2, 'y');
-        p.propagate_position(t_step);
-        p.propagate_momentum(t_step);
-    }
-
-    // Return
-    return;
-}
-
-void results_to_csv(const Result& r, const std::string& filename, int n_steps)
-/*
-    Function to save results to csv file
-    Result results : result struct
-    string filename : name of file to save as
-    int n_steps : number of elements in list
-*/
-{
     // Write file
     std::ofstream file(filename);
 
     // If not open, error
-    if (!file.is_open()) 
+    if (!file.is_open())
     {
         std::cerr << "Error: Unable to open the file " << filename << std::endl;
         return;
@@ -72,21 +39,53 @@ void results_to_csv(const Result& r, const std::string& filename, int n_steps)
     // Write the header row
     file << "Steps, X-Coordinate, Momentum" << std::endl;
 
-    // Write the data rows
-    for (int i = 0; i < n_steps; i++) 
+    // For loop to run simulation
+    for (int i = 0; i < n_steps; i++)
     {
-        file << r.steps[i] << ", " << r.x_coord[i] << ", " << r.x_momenta[i] << std::endl;
-    }
+	// Progress
+	progress = (static_cast<double>(i) / n_steps) * 100;
 
+        // Append trajectories
+        file << i << ", " << p.get_x() << ", " << p.get_xmomentum() << std::endl;
+
+        // Propagate particle
+        p.propagate_momentum(t_step);
+        p.propagate_position(t_step);
+        p.propagate_momentum(t_step, thermostat_1, 'x');
+        p.propagate_momentum(t_step, thermostat_2, 'y');
+        p.propagate_position(t_step);
+        p.propagate_momentum(t_step);
+
+    	// Progress tracking
+    	// Update the progress bar
+        if (progress >= j * 10)
+        {
+            std::cout << "["; // Start bracket
+            for (int k = 0; k < j; k++) {
+                std::cout << "="; // Equal signs for completed part
+            }
+            std::cout << ">"; // Greater than sign for current progress
+            for (int k = j + 1; k < 10; k++) {
+                std::cout << " "; // Spaces for remaining part
+            }
+            std::cout << "]\t" << j*10 << "%"; // End bracket
+            j++;
+            std::cout.flush(); // Flush the output buffer to ensure it's displayed immediately
+            std::cout << '\r';
+	}
+     }
+
+    // Return
     file.close();
+    std::cout << "[==========]\t100%" << std::endl;
+    return;
 }
 
 // Main
 int main()
 {
     // Initialize result and starting variables
-    Result md_results;
-    int n_steps = 250000000;
+    int n_steps = 20000000;
     double coords[2] = {1.0, 1.0};
     double momenta[2] = {1.0, 1.0};
     double mass[2] = {300, 1};
@@ -97,12 +96,10 @@ int main()
     Particle particle(coords, momenta, mass);
 
     // Run simulation
-    run_simulation(particle, thermostat_x, thermostat_y, n_steps, 0.0025, md_results);
-
-    // Write results to file
     std::string filename = "results.csv";
-    results_to_csv(md_results, filename, n_steps);
+    run_simulation(particle, thermostat_x, thermostat_y, n_steps, 0.0025, filename);
 
     // Exit
+    std::cout << "END" << std::endl;
     return 0;
 }

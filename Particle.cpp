@@ -22,12 +22,6 @@ Particle::Particle(const double coords[], const double momenta[], const double m
     p_y = momenta[1];
     m_x = mass[0];
     m_y = mass[1];
-
-    // Potential constants
-    d = 4;
-    a = 1;
-    omega = 1;
-    lambda = 2.878;    
 }
 
 void Particle::propagate_position(double t_step)
