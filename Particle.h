@@ -21,22 +21,23 @@ class Particle
         void propagate_momentum(double t_step);
         void propagate_momentum(double t_step, GGMT thermostat, char idx);
         double get_x();
+        double get_y();
         double get_xmomentum();
         double get_ymomentum();
 
     // Private
     private:
 
-        // Particle and thermostat variables
+        // Particle variables
         double x, y;        // x and y coordinates
         double p_x, p_y;    // x and y momenta
-        double m_x, m_y     // x and y masses
+        double m_x, m_y;     // x and y masses
 
         // Constants governing potential
-        d = 4;
-        a = 1;
-        omega = 1;
-        lambda = 2.878
+        double d = 4;
+        double a = 1;
+        double omega = 1;
+        double lambda = 2.878;
 
         // Set force as gradient of potential
         double force_x, force_y;

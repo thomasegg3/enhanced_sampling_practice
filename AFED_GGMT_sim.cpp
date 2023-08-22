@@ -6,8 +6,10 @@
 
 // Include necessary libraries
 #include <iostream>
+#include <fstream>
 #include <vector>
-#include "omp.h"
+#include <string>
+#include "Particle.h"
 
 // Struct for results
 struct Result
@@ -38,25 +40,45 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
 
         // Propagate particle
         p.propagate_momentum(t_step);
-        p.propagete_position(t_step);
-
-        // Parallelize thermostat updating
-        #pragma omp sections
-        {
-            #pragma omp section
-            p.propagate_momentum(t_step, thermostat_1, 'x');
-
-            #pragma omp section
-            p.propagate_momentum(t_step, thermostat_2, 'y');
-        }
-
-        // Finish propagation
-        p.propagete_position(t_step);
+        p.propagate_position(t_step);
+        p.propagate_momentum(t_step, thermostat_1, 'x');
+        p.propagate_momentum(t_step, thermostat_2, 'y');
+        p.propagate_position(t_step);
         p.propagate_momentum(t_step);
     }
 
     // Return
     return;
+}
+
+void results_to_csv(const Result& r, const std::string& filename, int n_steps)
+/*
+    Function to save results to csv file
+    Result results : result struct
+    string filename : name of file to save as
+    int n_steps : number of elements in list
+*/
+{
+    // Write file
+    std::ofstream file(filename);
+
+    // If not open, error
+    if (!file.is_open()) 
+    {
+        std::cerr << "Error: Unable to open the file " << filename << std::endl;
+        return;
+    }
+
+    // Write the header row
+    file << "Steps, X-Coordinate, Momentum" << std::endl;
+
+    // Write the data rows
+    for (int i = 0; i < n_steps; i++) 
+    {
+        file << r.steps[i] << ", " << r.x_coord[i] << ", " << r.x_momenta[i] << std::endl;
+    }
+
+    file.close();
 }
 
 // Main
@@ -71,8 +93,15 @@ int main()
     
     // Initialize Particle and two GGMTs
     GGMT thermostat_x(0.0, 0.0, 1.0, -1.0, 10.0, 2666.6666666, 15.0);
-    GGMT thermostat_y(0.0, 0.0, 1.0, -1.0, 1, 8/3, 1.0);
+    GGMT thermostat_y(0.0, 0.0, 1.0, -1.0, 1.0, 8/3, 1.0);
     Particle particle(coords, momenta, mass);
+
+    // Run simulation
+    run_simulation(particle, thermostat_x, thermostat_y, n_steps, 0.0025, md_results);
+
+    // Write results to file
+    std::string filename = "results.csv";
+    results_to_csv(md_results, filename, n_steps);
 
     // Exit
     return 0;

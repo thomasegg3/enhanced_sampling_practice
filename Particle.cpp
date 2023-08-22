@@ -7,7 +7,7 @@
 // Include particle
 #include "Particle.h"
 
-Particle::Particle(const double& coords[], const double& momenta[], const double& mass[])
+Particle::Particle(const double coords[], const double momenta[], const double mass[])
 /*
     Constructor for a particle
     double* coords : pointer to coordinate array with x and y
@@ -45,8 +45,8 @@ void Particle::propagate_momentum(double t_step)
 */
 {
     // Set forces
-    force_x = - (((4 * d * x) / (a ** 4)) * ((x ** 2) - (a ** 2))) + (y * lam);
-    force_y = - ((m_y * (omega ** 2) * y) + (lam * x));
+    force_x = - (((4 * d * x) / (std::pow(a, 4))) * (std::pow(x, 2) - std::pow(a, 2))) + (y * lambda);
+    force_y = - ((m_y * (std::pow(omega, 2)) * y) + (lambda * x));
 
     // Update momentum
     p_x += (t_step / 2) * force_x;
