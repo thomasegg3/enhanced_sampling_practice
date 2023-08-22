@@ -29,7 +29,6 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
 */
 {
     // For loop to run simulation
-    #pragma omp parallel for
     for (int i = 0; i < n_steps; i++)
     {
         // Append trajectories
@@ -51,7 +50,7 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
             p.propagate_momentum(t_step, thermostat_2, 'y');
         }
 
-        // Finish particle propagation
+        // Finish propagation
         p.propagete_position(t_step);
         p.propagate_momentum(t_step);
     }
@@ -71,9 +70,9 @@ int main()
     double mass[2] = {300, 1};
     
     // Initialize Particle and two GGMTs
-    thermostat_x = GGMT(0.0, 0.0, 1.0, -1.0, 10.0, 2666.6666666, 15.0);
-    thermostat_y = GGMT(0.0, 0.0, 1.0, -1.0, 1, 8/3, 1.0);
-    particle = Particle(coords, momenta, mass);
+    GGMT thermostat_x(0.0, 0.0, 1.0, -1.0, 10.0, 2666.6666666, 15.0);
+    GGMT thermostat_y(0.0, 0.0, 1.0, -1.0, 1, 8/3, 1.0);
+    Particle particle(coords, momenta, mass);
 
     // Exit
     return 0;
