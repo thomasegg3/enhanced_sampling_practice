@@ -19,7 +19,7 @@ class Particle
         Particle(const double coords[], const double momenta[], const double mass[]);
         void propagate_position(double t_step);
         void propagate_momentum(double t_step);
-        void propagate_momentum(double t_step, GGMT thermostat, char idx);
+        void propagate_momentum(double t_step, GGMT& thermostat, char idx);
         double get_x();
         double get_y();
         double get_xmomentum();
@@ -34,10 +34,10 @@ class Particle
         double m_x, m_y;     // x and y masses
 
         // Constants governing potential
-        double d = 4;
-        double a = 1;
-        double omega = 1;
-        double lambda = 2.878;
+        double d;
+        double a;
+        double omega;
+        double lam;
 
         // Set force as gradient of potential
         double force_x, force_y;

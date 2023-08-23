@@ -6,6 +6,7 @@
 
 // Include libraries
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
 // Indicate source file
@@ -17,7 +18,7 @@ class GGMT
     // Public
     public:
         GGMT(double var1, double var2, double momenta1, double momenta2, double q1, double q2, double kT);
-        double update_thermostat(double momentum, double mass, double t_step);
+        void update_thermostat(double& momentum, const double& mass, const double& t_step);
 
     // Private
     private:

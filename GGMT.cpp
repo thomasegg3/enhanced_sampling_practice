@@ -29,7 +29,7 @@ GGMT::GGMT(double var1, double var2, double momenta1, double momenta2, double q1
     kT = kT;
 }
 
-double GGMT::update_thermostat(double momentum, double mass, double t_step)
+void GGMT::update_thermostat(double& momentum, const double& mass, const double& t_step)
 /*
     Function to update thermostat variables
     double momentum : particle momentum
@@ -40,15 +40,16 @@ double GGMT::update_thermostat(double momentum, double mass, double t_step)
 {
     // To update variables need Suzuki-Yoshida decomposition
     double w1, w2, w3;
-    w1 = w3 = 1 / (2 - (std::pow(2, 1/3)));
-    w2 = 1 - (2 * w1);
+    w1 = 1.0 / (2.0 - (std::pow(2.0, 1.0/3.0)));
+    w3 = w1;
+    w2 = 1.0 - (2.0 * w1);
     double n_sy[3] = {w1, w2, w3};
     int n_c = 2;
 
     // Iterate and update variables
     for (int i = 0; i < n_c; i++)
     {
-        for (double w : n_sy)
+        for (auto w : n_sy)
         {
             // Set dt
             double dt = (w * t_step) / n_c;
@@ -82,6 +83,11 @@ double GGMT::update_thermostat(double momentum, double mass, double t_step)
         }
     }
 
-    // Return new particle momentum
-    return momentum;
+    std::cout << p_1 << std::endl;
+    std::cout << p_2 << std::endl;
+    std::cout << eta1 << std::endl;
+    std::cout << eta2 << std::endl;
+
+    // Return
+    return;
 }
