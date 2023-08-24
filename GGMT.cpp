@@ -29,7 +29,7 @@ GGMT::GGMT(double var1, double var2, double momenta1, double momenta2, double q1
     kT = boltzmann_temp;
 }
 
-void GGMT::update_thermostat(double& momentum, const double& mass, const double& t_step)
+void GGMT::update_thermostat(double& momentum, const double& mass, const double& t_step, const int& factor)
 /*
     Function to update thermostat variables
     double momentum : particle momentum
@@ -52,7 +52,7 @@ void GGMT::update_thermostat(double& momentum, const double& mass, const double&
         for (const double& w : n_sy)
         {
             // Set dt
-            double dt = (w * t_step) / n_c;
+            double dt = (w * t_step) / (factor * n_c);
 
             // Set constant g
             double g = kT + (std::pow(momentum, 2) / mass);

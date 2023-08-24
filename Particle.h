@@ -18,8 +18,12 @@ class Particle
     public:
         Particle(const double coords[], const double momenta[], const double mass[]);
         void propagate_position(double t_step);
+        void propagate_x(double t_step);
+        void propagate_y(double t_step);
+        void propagate_py(double t_step);
+        void propagate_px(double t_step);
         void propagate_momentum(double t_step);
-        void propagate_momentum(double t_step, GGMT& thermostat, char idx);
+        void propagate_momentum(double t_step, GGMT& thermostat, char idx, const int& factor);
         double get_x();
         double get_y();
         double get_xmomentum();

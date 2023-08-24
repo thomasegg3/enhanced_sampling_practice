@@ -44,6 +44,26 @@ void Particle::propagate_position(double t_step)
     return;
 }
 
+void Particle::propagate_x(double t_step)
+/*
+    Function to propagate x only
+    double t_step : simulation timestep
+*/
+{
+    // Update x
+    x += ((t_step * p_x) / m_x);
+}
+
+void Particle::propagate_y(double t_step)
+/*
+    Function to propagate y only
+    double t_step : simulation timestep
+*/
+{
+    // Update x
+    y += ((t_step * p_y) / (2 * m_y));
+}
+
 void Particle::propagate_momentum(double t_step)
 /*
     Function to update momentum
@@ -62,7 +82,33 @@ void Particle::propagate_momentum(double t_step)
     return;
 }
 
-void Particle::propagate_momentum(double t_step, GGMT& thermostat, char idx)
+void Particle::propagate_py(double t_step)
+/*
+    Function to propagate y momentum only
+    double t_step : simulation timestep
+*/
+{
+    // Set force
+    force_y = - ((m_y * std::pow(omega, 2) * y) + (lam * x));
+
+    // Update momentum
+    p_y += (t_step / 2) * force_y;
+}
+
+void Particle::propagate_px(double t_step)
+/*
+    Function to propagate y momentum only
+    double t_step : simulation timestep
+*/
+{
+    // Set force
+    force_x = - ((((4 * d * x) / (std::pow(a, 4))) * (std::pow(x, 2) - std::pow(a, 2))) + (y * lam));
+
+    // Update momentum
+    p_x += (t_step / 2) * force_x;
+}
+
+void Particle::propagate_momentum(double t_step, GGMT& thermostat, char idx, const int& factor)
 /*
     Function to propagate momentum through thermostat operator
     double t_step : simulation timestep
@@ -74,11 +120,11 @@ void Particle::propagate_momentum(double t_step, GGMT& thermostat, char idx)
     switch (idx)
     {
         case 'x':
-            thermostat.update_thermostat(p_x, m_x, t_step);
+            thermostat.update_thermostat(p_x, m_x, t_step, factor);
             break;
                 
         case 'y':
-            thermostat.update_thermostat(p_y, m_y, t_step);
+            thermostat.update_thermostat(p_y, m_y, t_step, factor);
             break;
 
         default:

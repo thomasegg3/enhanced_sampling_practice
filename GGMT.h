@@ -18,7 +18,7 @@ class GGMT
     // Public
     public:
         GGMT(double var1, double var2, double momenta1, double momenta2, double q1, double q2, double boltzmann_temp);
-        void update_thermostat(double& momentum, const double& mass, const double& t_step);
+        void update_thermostat(double& momentum, const double& mass, const double& t_step, const int& factor);
 
     // Private
     private:

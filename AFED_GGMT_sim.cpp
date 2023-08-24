@@ -48,12 +48,16 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
         file << i+1 << ", " << p.get_x() << std::endl;
 
         // Propagate particle
-        p.propagate_momentum(t_step);
-        p.propagate_position(t_step);
-        p.propagate_momentum(t_step, thermostat_1, 'x');
-        p.propagate_momentum(t_step, thermostat_2, 'y');
-        p.propagate_position(t_step);
-        p.propagate_momentum(t_step);
+        p.propagate_y(t_step);
+        p.propagate_momentum(t_step, thermostat_2, 'y', 2);
+        p.propagate_py(t_step);
+        p.propagate_px(t_step);
+        p.propagate_x(t_step);
+        p.propagate_momentum(t_step, thermostat_1, 'x', 1);
+        p.propagate_px(t_step);
+        p.propagate_py(t_step);
+        p.propagate_momentum(t_step, thermostat_2, 'y', 2);
+        p.propagate_y(t_step);
 
     	// Progress tracking
         if (progress >= j * 10)
