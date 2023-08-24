@@ -36,7 +36,7 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
     }
 
     // Write the header row
-    file << "Steps,X-Coordinate,Momentum,y,ym" << std::endl;
+    file << "Steps,X-Coordinate" << std::endl;
 
     // For loop to run simulation
     for (int i = 0; i < n_steps; i++)
@@ -45,7 +45,7 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
 	progress = (static_cast<double>(i) / n_steps) * 100;
 
         // Append trajectories
-        file << i << ", " << p.get_x() << ", " << p.get_xmomentum() << ", " << p.get_y() << ", " << p.get_ymomentum() << std::endl;
+        file << i+1 << ", " << p.get_x() << std::endl;
 
         // Propagate particle
         p.propagate_momentum(t_step);
@@ -56,20 +56,19 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
         p.propagate_momentum(t_step);
 
     	// Progress tracking
-    	// Update the progress bar
         if (progress >= j * 10)
         {
-            std::cout << "["; // Start bracket
+            std::cout << "[";
             for (int k = 0; k < j; k++) {
-                std::cout << "="; // Equal signs for completed part
+                std::cout << "="; 
             }
-            std::cout << ">"; // Greater than sign for current progress
+            std::cout << ">"; 
             for (int k = j + 1; k < 10; k++) {
-                std::cout << " "; // Spaces for remaining part
+                std::cout << " "; 
             }
-            std::cout << "]\t" << j*10 << "%"; // End bracket
+            std::cout << "]\t" << j*10 << "%"; 
             j++;
-            std::cout.flush(); // Flush the output buffer to ensure it's displayed immediately
+            std::cout.flush(); 
             std::cout << '\r';
     	}
      }
@@ -84,13 +83,13 @@ void run_simulation(Particle& p, GGMT& thermostat_1, GGMT& thermostat_2, int n_s
 int main()
 {
     // Initialize result and starting variables
-    int n_steps = 1500000;
-    double coords[2] = {1.0, 1.0};
+    int n_steps = 350000000;
+    double coords[2] = {-1.0, 3.0};
     double momenta[2] = {1.0, 1.0};
-    double mass[2] = {300, 1};
+    double mass[2] = {300.0, 1.0};
     
     // Initialize Particle and two GGMTs
-    GGMT thermostat_x(0.0, 0.0, 1.0, -1.0, 15.0, 9000.0, 15.0);
+    GGMT thermostat_x(0.0, 0.0, 1.0, -1.0, 10.0, 2666.6666, 10.0);
     GGMT thermostat_y(0.0, 0.0, 1.0, -1.0, 1.0, 8.0/3.0, 1.0);
     Particle particle(coords, momenta, mass);
 

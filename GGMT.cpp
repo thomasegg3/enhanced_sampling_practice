@@ -7,7 +7,7 @@
 // Include GGMT
 #include "GGMT.h"
 
-GGMT::GGMT(double var1, double var2, double momenta1, double momenta2, double q1, double q2, double kT)
+GGMT::GGMT(double var1, double var2, double momenta1, double momenta2, double q1, double q2, double boltzmann_temp)
 /*
     Constructor for a GGMT thermostat
     double var1 : thermostat variable 1
@@ -26,7 +26,7 @@ GGMT::GGMT(double var1, double var2, double momenta1, double momenta2, double q1
     p_2 = momenta2;
     q_1 = q1;
     q_2 = q2;
-    kT = kT;
+    kT = boltzmann_temp;
 }
 
 void GGMT::update_thermostat(double& momentum, const double& mass, const double& t_step)
@@ -49,7 +49,7 @@ void GGMT::update_thermostat(double& momentum, const double& mass, const double&
     // Iterate and update variables
     for (int i = 0; i < n_c; i++)
     {
-        for (auto w : n_sy)
+        for (const double& w : n_sy)
         {
             // Set dt
             double dt = (w * t_step) / n_c;
@@ -82,12 +82,6 @@ void GGMT::update_thermostat(double& momentum, const double& mass, const double&
             p_1 += (dt / 2) * g_1; 
         }
     }
-
-    std::cout << p_1 << std::endl;
-    std::cout << p_2 << std::endl;
-    std::cout << eta1 << std::endl;
-    std::cout << eta2 << std::endl;
-
     // Return
     return;
 }
